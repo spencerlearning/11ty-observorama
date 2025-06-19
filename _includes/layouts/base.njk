@@ -1,74 +1,96 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="{{ metadata.language }}">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>{{ title or metadata.title }}</title>
-		<meta name="description" content="{{ description or metadata.description }}">
-		<link rel="alternate" href="/feed/feed.xml" type="application/atom+xml" title="{{ metadata.title }}">
 
-		{#- Uncomment this if you’d like folks to know that you used Eleventy to build your site!  #}
-		{#- <meta name="generator" content="{{ eleventy.generator }}"> #}
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="generator" content="{{ eleventy.generator }}">
+	{#- <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> #}
 
-		{#-
-		Plain-text bundles are provided via the `eleventy-plugin-bundle` plugin:
-		1. CSS:
-			* Add to a per-page bundle using `{% css %}{% endcss %}`
-			* Retrieve bundle content using `{% getBundle "css" %}` or `{% getBundleFileUrl "css" %}`
-		2. Or for JavaScript:
-			* Add to a per-page bundle using `{% js %}{% endjs %}`
-			* Retrieve via `{% getBundle "js" %}` or `{% getBundleFileUrl "js" %}`
-		3. Learn more: https://github.com/11ty/eleventy-plugin-bundle
-		#}
+	<title>{{ title or metadata.title }}</title>
+	<meta name="description" content="{{ description or metadata.description }}">
 
-		{#- Add CSS to the bundle #}
-		<style>/* This is an arbitrary CSS string added to the bundle */</style>
+	{% if (metadata.noindex === true and noindex !== false) or (noindex === true)  %}
+		<meta name="robots" content="noindex">
+	{%- endif %}
 
-		{#- Add the contents of a file to the bundle #}
-		<style>{% include "css/index.css" %}</style>
+	{%- if metadata.canonical === true %}
+	{%- if page.url == "/" %}
+		<link rel="canonical" href="{{ metadata.url }}">
+	{%- else %}
+		<link rel="canonical" href="{{ metadata.url }}{{ page.url }}">
+	{%- endif %}
+	{%- endif %}
 
-		{#- Or you can add from node_modules #}
-		{# <style>{% include "node_modules/something.css" %}</style> #}
+	<link rel="alternate" href="/feed/feed.xml" type="application/atom+xml" title="{{ metadata.title }}">
 
-		{#- Render the CSS bundle using inlined CSS (for the fastest site performance in production) #}
-		<style>{% getBundle "css" %}</style>
+	{#- <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-alpha.13/dist/styles/themes/default.css" />
+	<link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-alpha.13/dist/styles/webawesome.css" /> #}
 
-		{#- Renders the CSS bundle using a separate file, if you can't set CSP directive style-src: 'unsafe-inline' #}
-		{#- <link rel="stylesheet" href="{% getBundleFileUrl "css" %}"> #}
+	<link rel="stylesheet" href="/css/style.css">
 
-		{#- Add the heading-anchors web component to the JavaScript bundle #}
-		<script type="module">{% include "node_modules/@zachleat/heading-anchors/heading-anchors.js" %}</script>
-	</head>
-	<body>
-		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+	{#-
+	Plain-text bundles are provided via the `eleventy-plugin-bundle` plugin:
+	1. CSS:
+		* Add to a per-page bundle using `{% css %}{% endcss %}`
+		* Retrieve bundle content using `{% getBundle "css" %}` or `{% getBundleFileUrl "css" %}`
+	2. Or for JavaScript:
+		* Add to a per-page bundle using `{% js %}{% endjs %}`
+		* Retrieve via `{% getBundle "js" %}` or `{% getBundleFileUrl "js" %}`
+	3. Learn more: https://github.com/11ty/eleventy-plugin-bundle
+	#}
 
-		<header>
-			<a href="/" class="home-link">{{ metadata.title }}</a>
+	{#- Add CSS to the bundle #}
+	{# <style>/* This is an arbitrary CSS string added to the bundle */</style> #}
 
-			{#- Read more about `eleventy-navigation` at https://www.11ty.dev/docs/plugins/navigation/ #}
-			<nav>
-				<h2 class="visually-hidden">Top level navigation menu</h2>
-				<ul class="nav">
-				{%- for entry in collections.all | eleventyNavigation %}
-					<li class="nav-item"><a href="{{ entry.url }}"{% if entry.url == page.url %} aria-current="page"{% endif %}>{{ entry.title }}</a></li>
-				{%- endfor %}
-				</ul>
-			</nav>
-		</header>
+	{#- Add the contents of a file to the bundle #}
+	{# <style>{% include "css/index.css" %}</style> #}
 
-		<main id="main">
-			<heading-anchors>
-				{{ content | safe }}
-			</heading-anchors>
-		</main>
+	{#- Or you can add from node_modules #}
+	{# <style>{% include "node_modules/something.css" %}</style> #}
 
-		<footer>
-			<p>
-				<em>Built with <a href="https://www.11ty.dev/">{{ eleventy.generator }}</a></em>
-			</p>
-		</footer>
+	{#- Render the CSS bundle using inlined CSS (for the fastest site performance in production) #}
+	<style>{% getBundle "css" %}</style>
 
-		<!-- This page `{{ page.url }}` was built on {% currentBuildDate %} -->
-		<script type="module" src="{% getBundleFileUrl "js" %}"></script>
-	</body>
+	{#- Renders the CSS bundle using a separate file, if you can't set CSP directive style-src: 'unsafe-inline' #}
+	{#- <link rel="stylesheet" href="{% getBundleFileUrl "css" %}"> #}
+
+	{#- Add the heading-anchors web component to the JavaScript bundle #}
+	<script type="module">{% include "node_modules/@zachleat/heading-anchors/heading-anchors.js" %}</script>
+
+</head>
+
+<body>
+	<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+	<header>
+		<a href="/" class="home-link">{{ metadata.title }}</a>
+
+		{#- Read more about `eleventy-navigation` at https://www.11ty.dev/docs/plugins/navigation/ #}
+		<nav>
+			<h2 class="visually-hidden">Top level navigation menu</h2>
+			<ul class="nav">
+			{%- for entry in collections.all | eleventyNavigation %}
+				<li class="nav-item"><a href="{{ entry.url }}"{% if entry.url == page.url %} aria-current="page"{% endif %}>{{ entry.title }}</a></li>
+			{%- endfor %}
+			</ul>
+		</nav>
+	</header>
+
+	<main id="main">
+		<heading-anchors>
+			{{ content | safe }}
+		</heading-anchors>
+	</main>
+
+	<footer>
+		<p>
+			<em>Built with <a href="https://www.11ty.dev/">{{ eleventy.generator }}</a></em>
+		</p>
+	</footer>
+
+	<!-- This page `{{ page.url }}` was built on {% currentBuildDate %} -->
+	<script type="module" src="{% getBundleFileUrl "js" %}"></script>
+
+</body>
 </html>
